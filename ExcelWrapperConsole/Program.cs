@@ -1,5 +1,6 @@
 ﻿using OpenXML.ExcelWrapper;
 using System;
+using System.Drawing;
 using System.IO;
 
 namespace ExcelWrapperConsole
@@ -12,29 +13,37 @@ namespace ExcelWrapperConsole
             var myFirstSheet = new ExcelSheet("My Sheet");
             wb.AddSheet(myFirstSheet);
 
+            var bordererCell = new ExcelCellStyle
+            {
+                CellFormat = CellFormatEnum.PercentageTwoDecimals,
+                BackgroundColor = Color.Red
+            };
 
-
-
-            myFirstSheet.AddOrUpdateCell(new ExcelCell("A3", "Text 1"));
-            myFirstSheet.AddOrUpdateCell(new ExcelCell("B3", "Other text"));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("A3", "Decimals"));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("B3", "Percentages"));
             myFirstSheet.AddOrUpdateCell(new ExcelCell("C3", "C Column"));
             myFirstSheet.AddOrUpdateCell(new ExcelCell(4, 3, "D Column"));
 
-            myFirstSheet.AddOrUpdateCell(new ExcelCell("A", 4, 0.34m) { CellFormat = CellFormatEnum.DecimalTwoDecimals });
-            myFirstSheet.AddOrUpdateCell(new ExcelCell("B", 4, 0.231) { CellFormat = CellFormatEnum.PercentageTwoDecimals });
-            myFirstSheet.AddOrUpdateCell(new ExcelCell("C", 4, DateTime.Now));
-            myFirstSheet.AddOrUpdateCell(new ExcelCell("D", 4, "ZZZ"));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("A", 4, 0.34m, CellFormatEnum.DecimalTwoDecimals));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("B", 4, 0.231, CellFormatEnum.PercentageTwoDecimals));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("C", 4, DateTime.Now, CellFormatEnum.DateTime));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("D", 4, 0.55m) { CellStyle = bordererCell });
 
-            myFirstSheet.AddOrUpdateCell(new ExcelCell("A", 5, 0.10m));
-            myFirstSheet.AddOrUpdateCell(new ExcelCell("B", 5, 0.20m));
-            myFirstSheet.AddOrUpdateCell(new ExcelCell("C", 5, 0.50m));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("A", 5, 0.10m, CellFormatEnum.DecimalTwoDecimals));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("B", 5, 0.20m, CellFormatEnum.PercentageTwoDecimals));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("C", 5, DateTime.Now, CellFormatEnum.DateTime));
             myFirstSheet.AddOrUpdateCell(new ExcelCell("D", 5, 0.99m));
 
-            //myFirstSheet.AddFormula("A", 6, "SUM(A5:D5)");
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("A6", 30));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("B6", 20));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("C6", 10));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("D6", 55));
+
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("A7", "=SUM(A6:D6)"));
 
             var xlsData = wb.Save();
 
-            var fileName = @"C:\temp\MyExcel.xlsx";
+            var fileName = @"C:\temp\MyExcel_v2.xlsx";
 
             File.WriteAllBytes(fileName, xlsData);
             System.Diagnostics.Process.Start(fileName);
