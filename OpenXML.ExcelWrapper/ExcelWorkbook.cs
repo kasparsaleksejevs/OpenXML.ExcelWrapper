@@ -87,26 +87,22 @@ namespace OpenXML.ExcelWrapper
             if (excelCell is null)
                 throw new ArgumentNullException(nameof(excelCell));
 
+            var cell = new Cell { CellReference = excelCell.Address };
+            if (excelCell.CellStyle != null)
+                cell.StyleIndex = excelCell.CellStyle.StyleIndex;
+
             if (excelCell.Value is null)
             {
-                var emptyCell = new Cell
-                {
-                    DataType = CellValues.String,
-                    CellValue = new CellValue(""),
-                };
-
-                return emptyCell;
+                cell.DataType = CellValues.String;
+                cell.CellValue = new CellValue("");
+                return cell;
             }
 
             if (excelCell.IsFormula)
             {
-                var cellWithFormula = new Cell
-                {
-                    CellFormula = new CellFormula(excelCell.Value as string),
-                    CellValue = new CellValue()
-                };
-
-                return cellWithFormula;
+                cell.CellFormula = new CellFormula(excelCell.Value as string);
+                cell.CellValue = new CellValue();
+                return cell;
             }
 
             CellValue cellValue = null;
@@ -143,14 +139,9 @@ namespace OpenXML.ExcelWrapper
                 cellValue = new CellValue(excelCell.Value.ToString());
             }
 
-            var cell = new Cell
-            {
-                DataType = excelCellType,
-                CellValue = cellValue,
-            };
-
-            if (excelCell.CellStyle != null)
-                cell.StyleIndex = excelCell.CellStyle.StyleIndex;
+            cell.DataType = excelCellType;
+            cell.CellValue = cellValue;
+            cell.CellReference = excelCell.Address;
 
             return cell;
         }

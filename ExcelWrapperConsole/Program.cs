@@ -50,7 +50,7 @@ namespace ExcelWrapperConsole
             myFirstSheet.AddOrUpdateCell(new ExcelCell("C6", 10) { CellStyle = greenCell });
             myFirstSheet.AddOrUpdateCell(new ExcelCell("D6", 55));
 
-            myFirstSheet.AddOrUpdateCell(new ExcelCell("A7", "=SUM(A6:D6)") { CellStyle = bordersCell });
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("C8", "=SUM(A6:D6)") { CellStyle = bordersCell });
 
             var xlsData = wb.Save();
 

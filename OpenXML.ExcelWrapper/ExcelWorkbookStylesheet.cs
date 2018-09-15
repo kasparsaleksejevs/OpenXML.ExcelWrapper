@@ -104,9 +104,9 @@ namespace OpenXML.ExcelWrapper
                 var border = new Border();
 
                 if ((item.Borders.Value & ExcelCellBorderEnum.Top) == ExcelCellBorderEnum.Top)
-                    border.AppendChild(new TopBorder(new Color { Auto = true }) { Style = BorderStyleValues.Thick });
+                    border.AppendChild(new TopBorder { Color = new Color { Auto = true }, Style = BorderStyleValues.Thick });
                 if ((item.Borders.Value & ExcelCellBorderEnum.Bottom) == ExcelCellBorderEnum.Bottom)
-                    border.AppendChild(new BottomBorder(new Color { Auto = true }) { Style = BorderStyleValues.Thick });
+                    border.AppendChild(new BottomBorder { Color = new Color { Auto = true }, Style = BorderStyleValues.Thick });
                 if ((item.Borders.Value & ExcelCellBorderEnum.Left) == ExcelCellBorderEnum.Left)
                     border.Append(new LeftBorder());
                 if ((item.Borders.Value & ExcelCellBorderEnum.Right) == ExcelCellBorderEnum.Right)
