@@ -33,8 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -51,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenXML.ExcelWrapper\OpenXML.ExcelWrapper.csproj">
-      <Project>{89B61B64-1B21-46BA-BB56-0280FDE310D7}</Project>
+      <Project>{29796476-3024-4c4a-8489-4b156ae813cf}</Project>
       <Name>OpenXML.ExcelWrapper</Name>
     </ProjectReference>
   </ItemGroup>

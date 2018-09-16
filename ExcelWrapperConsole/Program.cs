@@ -1,4 +1,5 @@
 ﻿using OpenXML.ExcelWrapper;
+using OpenXML.ExcelWrapper.Styling;
 using System;
 using System.IO;
 
@@ -8,29 +9,59 @@ namespace ExcelWrapperConsole
     {
         static void Main(string[] args)
         {
-            var wb = ExcelCreatorWorkbook.CreateWorkbook();
-            var myFirstSheet = wb.AddSheet("My Sheet");
+            var wb = new ExcelWorkbook();
+            var myFirstSheet = new ExcelSheet("My Sheet");
+            wb.AddSheet(myFirstSheet);
 
-            myFirstSheet.AddCell("A", 3, "Text 1");
-            myFirstSheet.AddCell("B", 3, "Other text");
-            myFirstSheet.AddCell("C", 3, "C Column");
-            myFirstSheet.AddCell(ExcelCell.GetColumnLetters(4), 3, "D Column");
+            var boldStyle = new ExcelCellStyle
+            {
+                Font = new ExcelCellStyleFont
+                {
+                    IsBold = true
+                }
+            };
 
-            myFirstSheet.AddCell("A", 4, 0.34m, CellFormatEnum.DecimalTwoDecimals);
-            myFirstSheet.AddCell("B", 4, 0.231, CellFormatEnum.PercentageTwoDecimals);
-            myFirstSheet.AddCell("C", 4, DateTime.Now);
-            myFirstSheet.AddCell("D", 4, "ZZZ");
+            var borderedYellowCell = new ExcelCellStyle
+            {
+                CellFormat = CellFormatEnum.PercentageTwoDecimals,
+                BackgroundColor = new ExcelColor("FFFF00"),
+                Font = new ExcelCellStyleFont { Color = new ExcelColor("FF0000") },
+            };
 
-            myFirstSheet.AddCell("A", 5, 0.10m);
-            myFirstSheet.AddCell("B", 5, 0.20m);
-            myFirstSheet.AddCell("C", 5, 0.50m);
-            myFirstSheet.AddCell("D", 5, 0.99m);
+            var greenCell = new ExcelCellStyle
+            {
+                BackgroundColor = new ExcelColor("00FF00"),
+            };
 
-            myFirstSheet.AddFormula("A", 6, "SUM(A5:D5)");
+            var bordersCell = new ExcelCellStyle();
+            bordersCell.Borders.Add(new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.Thick, new ExcelColor("FF0000")));
+            bordersCell.Borders.Add(new ExcelCellStyleBorder(ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.DashDotDot));
+
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("A3", "Decimals") { CellStyle = boldStyle });
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("B3", "Percentages") { CellStyle = boldStyle });
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("C3", "C Column") { CellStyle = boldStyle });
+            myFirstSheet.AddOrUpdateCell(new ExcelCell(4, 3, "D Column") { CellStyle = boldStyle });
+
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("A", 4, 0.34m, CellFormatEnum.DecimalTwoDecimals));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("B", 4, 0.231, CellFormatEnum.PercentageTwoDecimals));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("C", 4, DateTime.Now, CellFormatEnum.DateTime));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("D", 4, 0.55m) { CellStyle = borderedYellowCell });
+
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("A", 5, 0.10m, CellFormatEnum.DecimalTwoDecimals));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("B", 5, 0.20m, CellFormatEnum.PercentageTwoDecimals));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("C", 5, DateTime.Now, CellFormatEnum.DateTime));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("D", 5, 0.99m));
+
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("A6", 30));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("B6", 20) { CellStyle = borderedYellowCell });
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("C6", 10) { CellStyle = greenCell });
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("D6", 55));
+
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("C8", "=SUM(A6:D6)") { CellStyle = bordersCell });
 
             var xlsData = wb.Save();
 
-            var fileName = @"C:\temp\MyExcel.xlsx";
+            var fileName = @"C:\temp\MyExcel_v2.xlsx";
 
             File.WriteAllBytes(fileName, xlsData);
             System.Diagnostics.Process.Start(fileName);
