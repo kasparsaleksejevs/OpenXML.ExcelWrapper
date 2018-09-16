@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenXML.ExcelWrapper.Styling;
+using System;
 using System.Text.RegularExpressions;
 
 namespace OpenXML.ExcelWrapper

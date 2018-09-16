@@ -125,16 +125,17 @@
   <ItemGroup>
     <Compile Include="CellFormatEnum.cs" />
     <Compile Include="ExcelCell.cs" />
-    <Compile Include="ExcelCellBorderEnum.cs" />
-    <Compile Include="ExcelCellStyle.cs" />
+    <Compile Include="Styling\ExcelCellBorderEnum.cs" />
+    <Compile Include="Styling\ExcelCellStyle.cs" />
     <Compile Include="ExcelSheet.cs" />
     <Compile Include="ExcelWorkbook.cs" />
     <Compile Include="ExcelWorkbookStylesheet.cs" />
-    <Compile Include="old\ExcelCell.cs" />
-    <Compile Include="old\ExcelCellFormula.cs" />
-    <Compile Include="old\ExcelCreatorSheet.cs" />
-    <Compile Include="old\ExcelCreatorWorkbook.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Styling\ExcelCellStyleBorder.cs" />
+    <Compile Include="Styling\ExcelCellStyleBorderSizeEnum.cs" />
+    <Compile Include="Styling\ExcelCellStyleFont.cs" />
+    <Compile Include="Styling\HorizontalAlignmentEnum.cs" />
+    <Compile Include="Styling\VerticalAlignmentEnum.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

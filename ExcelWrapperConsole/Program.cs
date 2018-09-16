@@ -1,4 +1,5 @@
 ﻿using OpenXML.ExcelWrapper;
+using OpenXML.ExcelWrapper.Styling;
 using System;
 using System.Drawing;
 using System.IO;
@@ -17,7 +18,7 @@ namespace ExcelWrapperConsole
             {
                 CellFormat = CellFormatEnum.PercentageTwoDecimals,
                 BackgroundColor = Color.Yellow,
-                FontColor = Color.Red
+                Font = new ExcelCellStyleFont { Color = Color.Red },
             };
 
             var greenCell = new ExcelCellStyle
@@ -25,10 +26,9 @@ namespace ExcelWrapperConsole
                 BackgroundColor = Color.Green,
             };
 
-            var bordersCell = new ExcelCellStyle
-            {
-                Borders = ExcelCellBorderEnum.Top | ExcelCellBorderEnum.Bottom
-            };
+            var bordersCell = new ExcelCellStyle();
+            bordersCell.Borders.Add(new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.Thick, Color.Red));
+            bordersCell.Borders.Add(new ExcelCellStyleBorder(ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.DashDotDot));
 
             myFirstSheet.AddOrUpdateCell(new ExcelCell("A3", "Decimals"));
             myFirstSheet.AddOrUpdateCell(new ExcelCell("B3", "Percentages"));

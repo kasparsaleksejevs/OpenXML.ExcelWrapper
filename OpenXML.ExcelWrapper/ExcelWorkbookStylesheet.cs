@@ -1,4 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
+using OpenXML.ExcelWrapper.Styling;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,6 +33,7 @@ namespace OpenXML.ExcelWrapper
                 this.AddNumberFormatToCellFormat(item, cellFormat);
                 this.AddBackgroundToCellFormat(item, cellFormat);
                 this.AddFontToCellFormat(item, cellFormat);
+                this.AddAlignmentToCellFormat(item, cellFormat);
                 this.AddBordersToCellFormat(item, cellFormat);
 
                 formats.AppendChild(cellFormat);
@@ -76,50 +79,105 @@ namespace OpenXML.ExcelWrapper
                     }
                 };
 
-                cellFormat.FillId = GetElementIndex(this.fills, fill);
+                cellFormat.FillId = GetElementIndexOrAdd(this.fills, fill);
                 cellFormat.ApplyFill = true;
             }
         }
 
         private void AddFontToCellFormat(ExcelCellStyle item, CellFormat cellFormat)
         {
-            if (item.FontColor.HasValue)
+            if (item.Font != null)
             {
-                var color = ColorToRgbString(item.FontColor.Value);
+                var color = ColorToRgbString(item.Font.Color.Value);
 
-                var font = new Font
-                {
-                    Color = new Color { Rgb = color },
-                };
+                var font = new Font();
+                if (!string.IsNullOrWhiteSpace(item.Font.FontName))
+                    font.AppendChild(new FontName { Val = item.Font.FontName });
 
-                cellFormat.FontId = GetElementIndex(this.fonts, font);
+                if (item.Font.Size.HasValue)
+                    font.AppendChild(new FontSize { Val = item.Font.Size.Value });
+
+                if (item.Font.Color.HasValue)
+                    font.AppendChild(new Color { Rgb = color });
+
+                if (item.Font.IsBold)
+                    font.AppendChild(new Bold { Val = true });
+
+                if (item.Font.IsItalic)
+                    font.AppendChild(new Italic { Val = true });
+
+                if (item.Font.IsUnderline)
+                    font.AppendChild(new Underline { Val = UnderlineValues.Single });
+
+                cellFormat.FontId = GetElementIndexOrAdd(this.fonts, font);
                 cellFormat.ApplyFont = true;
             }
         }
 
+        private void AddAlignmentToCellFormat(ExcelCellStyle item, CellFormat cellFormat)
+        {
+            var alignment = new Alignment() { WrapText = false, TextRotation = 99, ShrinkToFit = true, };
+            if (item.HorizontalAlignment.HasValue)
+                alignment.Horizontal = (HorizontalAlignmentValues)(int)item.HorizontalAlignment.Value;
+
+            if (item.VerticalAlignment.HasValue)
+                alignment.Vertical = (VerticalAlignmentValues)(int)item.VerticalAlignment.Value;
+
+            if (item.WrapText.HasValue)
+                alignment.WrapText = item.WrapText.Value;
+
+            if (item.TextRotation.HasValue)
+                alignment.TextRotation = (uint)item.TextRotation.Value;
+
+            if (item.ShrinkToFit.HasValue)
+                alignment.ShrinkToFit = item.ShrinkToFit.Value;
+
+            cellFormat.ApplyAlignment = true;
+        }
+
         private void AddBordersToCellFormat(ExcelCellStyle item, CellFormat cellFormat)
         {
-            if (item.Borders.HasValue)
+            if (item.Borders != null && item.Borders.Count > 0)
             {
                 var border = new Border();
+                foreach (var borderItem in item.Borders)
+                {
+                    var color = new Color();
+                    if (borderItem.Color is null)
+                        color.Auto = true;
+                    else
+                        color.Rgb = ColorToRgbString(borderItem.Color.Value);
 
-                if ((item.Borders.Value & ExcelCellBorderEnum.Top) == ExcelCellBorderEnum.Top)
-                    border.AppendChild(new TopBorder { Color = new Color { Auto = true }, Style = BorderStyleValues.Thick });
-                if ((item.Borders.Value & ExcelCellBorderEnum.Bottom) == ExcelCellBorderEnum.Bottom)
-                    border.AppendChild(new BottomBorder { Color = new Color { Auto = true }, Style = BorderStyleValues.Thick });
-                if ((item.Borders.Value & ExcelCellBorderEnum.Left) == ExcelCellBorderEnum.Left)
-                    border.Append(new LeftBorder());
-                if ((item.Borders.Value & ExcelCellBorderEnum.Right) == ExcelCellBorderEnum.Right)
-                    border.Append(new RightBorder());
-                if ((item.Borders.Value & ExcelCellBorderEnum.Diagonal) == ExcelCellBorderEnum.Diagonal)
-                    border.Append(new DiagonalBorder());
+                    switch (borderItem.Border)
+                    {
+                        case ExcelCellBorderEnum.None:
+                            break;
+                        case ExcelCellBorderEnum.Left:
+                            border.AppendChild(new LeftBorder { Color = color, Style = (BorderStyleValues)(int)borderItem.Style });
+                            break;
+                        case ExcelCellBorderEnum.Right:
+                            border.AppendChild(new RightBorder { Color = color, Style = (BorderStyleValues)(int)borderItem.Style });
+                            break;
+                        case ExcelCellBorderEnum.Top:
+                            border.AppendChild(new TopBorder { Color = color, Style = (BorderStyleValues)(int)borderItem.Style });
+                            break;
+                        case ExcelCellBorderEnum.Bottom:
+                            border.AppendChild(new BottomBorder { Color = color, Style = (BorderStyleValues)(int)borderItem.Style });
+                            break;
+                        case ExcelCellBorderEnum.Diagonal:
+                            border.AppendChild(new DiagonalBorder { Color = color, Style = (BorderStyleValues)(int)borderItem.Style });
+                            break;
+                        default:
+                            throw new NotSupportedException();
+                    }
+                }
 
-                cellFormat.BorderId = GetElementIndex(this.borders, border);
+                cellFormat.BorderId = GetElementIndexOrAdd(this.borders, border);
                 cellFormat.ApplyBorder = true;
             }
         }
 
-        private uint GetElementIndex<T>(IList<T> collection, T element)
+        private uint GetElementIndexOrAdd<T>(IList<T> collection, T element)
         {
             uint id = 0;
             if (!collection.Contains(element))
