@@ -13,7 +13,7 @@ namespace OpenXML.ExcelWrapper.Tests
         [TestMethod]
         public void ExcelCellStyleBorder_OneInstance()
         {
-            var cellStyleA = new ExcelCellStyleBorder(ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Dashed, Color.Aquamarine);
+            var cellStyleA = new ExcelCellStyleBorder(ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Dashed, new ExcelColor("559999"));
             var cellStyleB = cellStyleA;
             cellStyleA.Equals(cellStyleB).ShouldBeTrue();
         }
@@ -21,8 +21,8 @@ namespace OpenXML.ExcelWrapper.Tests
         [TestMethod]
         public void ExcelCellStyleBorder_TwoInstances_Identical()
         {
-            var cellStyleA = new ExcelCellStyleBorder(ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Dashed, Color.Aquamarine);
-            var cellStyleB = new ExcelCellStyleBorder(ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Dashed, Color.Aquamarine);
+            var cellStyleA = new ExcelCellStyleBorder(ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Dashed, new ExcelColor("559999"));
+            var cellStyleB = new ExcelCellStyleBorder(ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Dashed, new ExcelColor("559999"));
 
             cellStyleA.Equals(cellStyleB).ShouldBeTrue();
         }
@@ -31,8 +31,8 @@ namespace OpenXML.ExcelWrapper.Tests
         public void ExcelCellStyleBorder_ListOfTwoInstancesDistinct_ShouldReturnOneInstance()
         {
             var lst = new List<ExcelCellStyleBorder> {
-                new ExcelCellStyleBorder(ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Dashed, Color.Aquamarine),
-                new ExcelCellStyleBorder(ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Dashed, Color.Aquamarine)
+                new ExcelCellStyleBorder(ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Dashed, new ExcelColor("559999")),
+                new ExcelCellStyleBorder(ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Dashed, new ExcelColor("559999"))
             };
 
             lst[0].ShouldBe(lst[1]);
@@ -44,9 +44,9 @@ namespace OpenXML.ExcelWrapper.Tests
         public void ExcelCellStyleBorder_ListOfThreeInstancesDistinct_ShouldReturnOneInstance()
         {
             var lst = new List<ExcelCellStyleBorder> {
-                new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.Double, Color.Green),
-                new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.Double, Color.Green),
-                new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.Double, Color.Green),
+                new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.Double, new ExcelColor("00FF00")),
+                new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.Double, new ExcelColor("00FF00")),
+                new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.Double, new ExcelColor("00FF00")),
             };
 
             lst.Distinct().Count().ShouldBe(1);
@@ -56,9 +56,9 @@ namespace OpenXML.ExcelWrapper.Tests
         public void ExcelCellStyleBorder_ListOfThreeDifferentInstancesDistinct_ShouldReturnTwoInstances()
         {
             var lst = new List<ExcelCellStyleBorder> {
-                new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.Double, Color.Green),
-                new ExcelCellStyleBorder(ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Dashed, Color.Aquamarine),
-                new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.Double, Color.Green),
+                new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.Double, new ExcelColor("00FF00")),
+                new ExcelCellStyleBorder(ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Dashed, new ExcelColor("559999")),
+                new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.Double, new ExcelColor("00FF00")),
             };
 
             lst.Distinct().Count().ShouldBe(2);

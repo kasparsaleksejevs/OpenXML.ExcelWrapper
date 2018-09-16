@@ -6,7 +6,7 @@
 
         public double? Size { get; set; }
 
-        public System.Drawing.Color? Color { get; set; }
+        public ExcelColor Color { get; set; }
 
         public bool IsBold { get; set; }
 
@@ -16,7 +16,7 @@
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
+            if (obj is null)
                 return false;
 
             if (obj is ExcelCellStyleFont FontName)
@@ -37,7 +37,7 @@
             int hash = 0;
             hash ^= 1 * this.FontName?.GetHashCode() ?? 1;
             hash ^= 8 * this.Size?.GetHashCode() ?? 1;
-            hash ^= 16 * this.Color?.ToArgb().GetHashCode() ?? 1;
+            hash ^= 16 * this.Color?.GetHashCode() ?? 1;
             hash ^= 32 * this.IsBold.GetHashCode();
             hash ^= 64 * this.IsItalic.GetHashCode();
             hash ^= 128 * this.IsUnderline.GetHashCode();

@@ -2,7 +2,6 @@
 using OpenXML.ExcelWrapper.Styling;
 using Shouldly;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 
 namespace OpenXML.ExcelWrapper.Tests
@@ -13,7 +12,7 @@ namespace OpenXML.ExcelWrapper.Tests
         [TestMethod]
         public void ExcelCellStyle_OneInstance()
         {
-            var cellStyleA = new ExcelCellStyle { CellFormat = CellFormatEnum.DecimalTwoDecimals, ShrinkToFit = true, BackgroundColor = Color.FloralWhite };
+            var cellStyleA = new ExcelCellStyle { CellFormat = CellFormatEnum.DecimalTwoDecimals, ShrinkToFit = true, BackgroundColor = new ExcelColor("0FA3D1") };
             var cellStyleB = cellStyleA;
             cellStyleA.Equals(cellStyleB).ShouldBeTrue();
         }
@@ -21,8 +20,8 @@ namespace OpenXML.ExcelWrapper.Tests
         [TestMethod]
         public void ExcelCellStyle_TwoInstances_Identical()
         {
-            var cellStyleA = new ExcelCellStyle { CellFormat = CellFormatEnum.DecimalTwoDecimals, ShrinkToFit = true, BackgroundColor = Color.FloralWhite };
-            var cellStyleB = new ExcelCellStyle { CellFormat = CellFormatEnum.DecimalTwoDecimals, ShrinkToFit = true, BackgroundColor = Color.FloralWhite };
+            var cellStyleA = new ExcelCellStyle { CellFormat = CellFormatEnum.DecimalTwoDecimals, ShrinkToFit = true, BackgroundColor = new ExcelColor("0FA3D1") };
+            var cellStyleB = new ExcelCellStyle { CellFormat = CellFormatEnum.DecimalTwoDecimals, ShrinkToFit = true, BackgroundColor = new ExcelColor("0FA3D1") };
 
             cellStyleA.Equals(cellStyleB).ShouldBeTrue();
         }
@@ -31,8 +30,8 @@ namespace OpenXML.ExcelWrapper.Tests
         public void ExcelCellStyle_ListOfTwoInstancesDistinct_ShouldReturnOneInstance()
         {
             var lst = new List<ExcelCellStyle> {
-                new ExcelCellStyle { CellFormat = CellFormatEnum.DecimalTwoDecimals, ShrinkToFit = true, BackgroundColor = Color.FloralWhite },
-                new ExcelCellStyle { CellFormat = CellFormatEnum.DecimalTwoDecimals, ShrinkToFit = true, BackgroundColor = Color.FloralWhite }
+                new ExcelCellStyle { CellFormat = CellFormatEnum.DecimalTwoDecimals, ShrinkToFit = true, BackgroundColor = new ExcelColor("0FA3D1") },
+                new ExcelCellStyle { CellFormat = CellFormatEnum.DecimalTwoDecimals, ShrinkToFit = true, BackgroundColor = new ExcelColor("0FA3D1") }
             };
 
             lst[0].ShouldBe(lst[1]);
@@ -46,11 +45,11 @@ namespace OpenXML.ExcelWrapper.Tests
             var lst = new List<ExcelCellStyle> {
                 new ExcelCellStyle {
                     CellFormat = CellFormatEnum.DecimalTwoDecimals,
-                    Font = new ExcelCellStyleFont { Color = Color.Fuchsia, IsBold = true, FontName =" test", IsItalic = true, IsUnderline = true, Size = 99 },
+                    Font = new ExcelCellStyleFont { Color = new ExcelColor("123456"), IsBold = true, FontName =" test", IsItalic = true, IsUnderline = true, Size = 99 },
                 },
                 new ExcelCellStyle {
                     CellFormat = CellFormatEnum.DecimalTwoDecimals,
-                    Font = new ExcelCellStyleFont { Color = Color.Fuchsia, IsBold = true, FontName =" test", IsItalic = true, IsUnderline = true, Size = 99 },
+                    Font = new ExcelCellStyleFont { Color = new ExcelColor("123456"), IsBold = true, FontName =" test", IsItalic = true, IsUnderline = true, Size = 99 },
                 },
             };
 
@@ -69,10 +68,10 @@ namespace OpenXML.ExcelWrapper.Tests
                     TextRotation = 99,
                     VerticalAlignment = VerticalAlignmentEnum.Justify,
                     WrapText = true,
-                    Font = new ExcelCellStyleFont { Color = Color.Fuchsia, IsBold = true, FontName =" test", IsItalic = true, IsUnderline = true, Size = 99 },
-                    Borders = new List<ExcelCellStyleBorder>{ new ExcelCellStyleBorder( ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Hair, Color.Aqua ), new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.DashDot, Color.Bisque) },
+                    Font = new ExcelCellStyleFont { Color = new ExcelColor("123456"), IsBold = true, FontName =" test", IsItalic = true, IsUnderline = true, Size = 99 },
+                    Borders = new List<ExcelCellStyleBorder>{ new ExcelCellStyleBorder( ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Hair, new ExcelColor("559999") ), new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.DashDot, new ExcelColor("667788")) },
                     ShrinkToFit = true,
-                    BackgroundColor = Color.FloralWhite
+                    BackgroundColor = new ExcelColor("0FA3D1")
                 },
                 new ExcelCellStyle {
                     CellFormat = CellFormatEnum.PercentageTwoDecimals,
@@ -80,10 +79,10 @@ namespace OpenXML.ExcelWrapper.Tests
                     TextRotation = 99,
                     VerticalAlignment = VerticalAlignmentEnum.Justify,
                     WrapText = true,
-                    Font = new ExcelCellStyleFont { Color = Color.Fuchsia, IsBold = true, FontName =" test", IsItalic = true, IsUnderline = true, Size = 99 },
-                    Borders = new List<ExcelCellStyleBorder>{ new ExcelCellStyleBorder( ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Hair, Color.Aqua ), new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.DashDot, Color.Bisque) },
+                    Font = new ExcelCellStyleFont { Color = new ExcelColor("123456"), IsBold = true, FontName =" test", IsItalic = true, IsUnderline = true, Size = 99 },
+                    Borders = new List<ExcelCellStyleBorder>{ new ExcelCellStyleBorder( ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Hair, new ExcelColor("559999") ), new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.DashDot, new ExcelColor("667788")) },
                     ShrinkToFit = true,
-                    BackgroundColor = Color.FloralWhite
+                    BackgroundColor = new ExcelColor("0FA3D1")
                 },
                 new ExcelCellStyle {
                     CellFormat = CellFormatEnum.PercentageTwoDecimals,
@@ -91,10 +90,10 @@ namespace OpenXML.ExcelWrapper.Tests
                     TextRotation = 99,
                     VerticalAlignment = VerticalAlignmentEnum.Justify,
                     WrapText = true,
-                    Font = new ExcelCellStyleFont { Color = Color.Fuchsia, IsBold = true, FontName =" test", IsItalic = true, IsUnderline = true, Size = 99 },
-                    Borders = new List<ExcelCellStyleBorder>{ new ExcelCellStyleBorder( ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Hair, Color.Aqua ), new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.DashDot, Color.Bisque) },
+                    Font = new ExcelCellStyleFont { Color = new ExcelColor("123456"), IsBold = true, FontName =" test", IsItalic = true, IsUnderline = true, Size = 99 },
+                    Borders = new List<ExcelCellStyleBorder>{ new ExcelCellStyleBorder( ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Hair, new ExcelColor("559999") ), new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.DashDot, new ExcelColor("667788")) },
                     ShrinkToFit = true,
-                    BackgroundColor = Color.FloralWhite
+                    BackgroundColor = new ExcelColor("0FA3D1")
                 },
             };
 
@@ -111,10 +110,10 @@ namespace OpenXML.ExcelWrapper.Tests
                     TextRotation = 99,
                     VerticalAlignment = VerticalAlignmentEnum.Justify,
                     WrapText = true,
-                    Font = new ExcelCellStyleFont { Color = Color.Fuchsia, IsBold = true, FontName =" test", IsItalic = true, IsUnderline = true, Size = 99 },
-                    Borders = new List<ExcelCellStyleBorder>{ new ExcelCellStyleBorder( ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Hair, Color.Aqua ), new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.DashDot, Color.Bisque) },
+                    Font = new ExcelCellStyleFont { Color = new ExcelColor("123456"), IsBold = true, FontName =" test", IsItalic = true, IsUnderline = true, Size = 99 },
+                    Borders = new List<ExcelCellStyleBorder>{ new ExcelCellStyleBorder( ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Hair, new ExcelColor("559999") ), new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.DashDot, new ExcelColor("667788")) },
                     ShrinkToFit = true,
-                    BackgroundColor = Color.FloralWhite
+                    BackgroundColor = new ExcelColor("0FA3D1")
                 },
                 new ExcelCellStyle {
                     CellFormat = CellFormatEnum.PercentageTwoDecimals,
@@ -122,10 +121,10 @@ namespace OpenXML.ExcelWrapper.Tests
                     TextRotation = 99,
                     VerticalAlignment = VerticalAlignmentEnum.Center,
                     WrapText = true,
-                    Font = new ExcelCellStyleFont { Color = Color.Fuchsia, IsBold = true, FontName =" test", IsItalic = true, IsUnderline = true, Size = 99 },
-                    Borders = new List<ExcelCellStyleBorder>{ new ExcelCellStyleBorder( ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Hair, Color.Aqua ), new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.DashDot, Color.Bisque) },
+                    Font = new ExcelCellStyleFont { Color = new ExcelColor("123456"), IsBold = true, FontName =" test", IsItalic = true, IsUnderline = true, Size = 99 },
+                    Borders = new List<ExcelCellStyleBorder>{ new ExcelCellStyleBorder( ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Hair, new ExcelColor("559999") ), new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.DashDot, new ExcelColor("667788")) },
                     ShrinkToFit = true,
-                    BackgroundColor = Color.FloralWhite
+                    BackgroundColor = new ExcelColor("0FA3D1")
                 },
                 new ExcelCellStyle {
                     CellFormat = CellFormatEnum.PercentageTwoDecimals,
@@ -133,10 +132,10 @@ namespace OpenXML.ExcelWrapper.Tests
                     TextRotation = 99,
                     VerticalAlignment = VerticalAlignmentEnum.Justify,
                     WrapText = true,
-                    Font = new ExcelCellStyleFont { Color = Color.Fuchsia, IsBold = true, FontName =" test", IsItalic = true, IsUnderline = true, Size = 99 },
-                    Borders = new List<ExcelCellStyleBorder>{ new ExcelCellStyleBorder( ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Hair, Color.Aqua ), new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.DashDot, Color.Bisque) },
+                    Font = new ExcelCellStyleFont { Color = new ExcelColor("123456"), IsBold = true, FontName =" test", IsItalic = true, IsUnderline = true, Size = 99 },
+                    Borders = new List<ExcelCellStyleBorder>{ new ExcelCellStyleBorder( ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.Hair, new ExcelColor("559999") ), new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.DashDot, new ExcelColor("667788")) },
                     ShrinkToFit = true,
-                    BackgroundColor = Color.FloralWhite
+                    BackgroundColor = new ExcelColor("0FA3D1")
                 },
             };
 

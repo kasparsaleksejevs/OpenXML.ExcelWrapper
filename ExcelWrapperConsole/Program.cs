@@ -1,7 +1,6 @@
 ﻿using OpenXML.ExcelWrapper;
 using OpenXML.ExcelWrapper.Styling;
 using System;
-using System.Drawing;
 using System.IO;
 
 namespace ExcelWrapperConsole
@@ -14,26 +13,34 @@ namespace ExcelWrapperConsole
             var myFirstSheet = new ExcelSheet("My Sheet");
             wb.AddSheet(myFirstSheet);
 
+            var boldStyle = new ExcelCellStyle
+            {
+                Font = new ExcelCellStyleFont
+                {
+                    IsBold = true
+                }
+            };
+
             var borderedYellowCell = new ExcelCellStyle
             {
                 CellFormat = CellFormatEnum.PercentageTwoDecimals,
-                BackgroundColor = Color.Yellow,
-                Font = new ExcelCellStyleFont { Color = Color.Red },
+                BackgroundColor = new ExcelColor("FFFF00"),
+                Font = new ExcelCellStyleFont { Color = new ExcelColor("FF0000") },
             };
 
             var greenCell = new ExcelCellStyle
             {
-                BackgroundColor = Color.Green,
+                BackgroundColor = new ExcelColor("00FF00"),
             };
 
             var bordersCell = new ExcelCellStyle();
-            bordersCell.Borders.Add(new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.Thick, Color.Red));
+            bordersCell.Borders.Add(new ExcelCellStyleBorder(ExcelCellBorderEnum.Top, ExcelCellStyleBorderSizeEnum.Thick, new ExcelColor("FF0000")));
             bordersCell.Borders.Add(new ExcelCellStyleBorder(ExcelCellBorderEnum.Bottom, ExcelCellStyleBorderSizeEnum.DashDotDot));
 
-            myFirstSheet.AddOrUpdateCell(new ExcelCell("A3", "Decimals"));
-            myFirstSheet.AddOrUpdateCell(new ExcelCell("B3", "Percentages"));
-            myFirstSheet.AddOrUpdateCell(new ExcelCell("C3", "C Column"));
-            myFirstSheet.AddOrUpdateCell(new ExcelCell(4, 3, "D Column"));
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("A3", "Decimals") { CellStyle = boldStyle });
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("B3", "Percentages") { CellStyle = boldStyle });
+            myFirstSheet.AddOrUpdateCell(new ExcelCell("C3", "C Column") { CellStyle = boldStyle });
+            myFirstSheet.AddOrUpdateCell(new ExcelCell(4, 3, "D Column") { CellStyle = boldStyle });
 
             myFirstSheet.AddOrUpdateCell(new ExcelCell("A", 4, 0.34m, CellFormatEnum.DecimalTwoDecimals));
             myFirstSheet.AddOrUpdateCell(new ExcelCell("B", 4, 0.231, CellFormatEnum.PercentageTwoDecimals));

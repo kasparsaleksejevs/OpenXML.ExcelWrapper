@@ -20,7 +20,7 @@ namespace OpenXML.ExcelWrapper
         {
             var addressRegex = new Regex(@"(?<col>([A-Z]|[a-z])+)(?<row>([1-9]\d*)+)");
             var match = addressRegex.Match(address);
-            if (match == null)
+            if (match is null)
                 throw new ArgumentException($"Invalid cell address {address}");
 
             var column = match.Groups["col"].Value;

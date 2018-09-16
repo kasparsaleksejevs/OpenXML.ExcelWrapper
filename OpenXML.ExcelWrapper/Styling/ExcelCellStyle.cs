@@ -8,7 +8,7 @@ namespace OpenXML.ExcelWrapper.Styling
     {
         public CellFormatEnum? CellFormat { get; set; }
 
-        public System.Drawing.Color? BackgroundColor { get; set; }
+        public ExcelColor BackgroundColor { get; set; }
 
         public ICollection<ExcelCellStyleBorder> Borders { get; set; } = new List<ExcelCellStyleBorder>();
 
@@ -52,7 +52,7 @@ namespace OpenXML.ExcelWrapper.Styling
             var isEqual = this.CellFormat == other.CellFormat
                     && this.BackgroundColor == other.BackgroundColor
                     && this.Borders.SequenceEqual(other.Borders)
-                    && (this.Font == null && other.Font == null || this.Font.Equals(other.Font))
+                    && (this.Font is null && other.Font is null || this.Font.Equals(other.Font))
                     && this.HorizontalAlignment == other.HorizontalAlignment
                     && this.VerticalAlignment == other.VerticalAlignment
                     && this.WrapText == other.WrapText
@@ -71,7 +71,7 @@ namespace OpenXML.ExcelWrapper.Styling
         /// </returns>
         public override bool Equals(object obj)
         {
-            if (obj == null)
+            if (obj is null)
                 return false;
 
             if (obj is ExcelCellStyle otherStyle)
@@ -91,7 +91,7 @@ namespace OpenXML.ExcelWrapper.Styling
             // ToDo: this hashing algorithm kind of sucks, maybe there is something better?
             int hash = 0;
             hash ^= 1 * this.CellFormat?.GetHashCode() ?? 1;
-            hash ^= 2 * this.BackgroundColor?.ToArgb().GetHashCode() ?? 1;
+            hash ^= 2 * this.BackgroundColor?.GetHashCode() ?? 1;
             hash ^= 4 * this.Borders.Select(s => s.GetHashCode()).Sum().GetHashCode();
             hash ^= 8 * this.Font?.GetHashCode() ?? 1;
             hash ^= 16 * this.HorizontalAlignment?.GetHashCode() ?? 1;

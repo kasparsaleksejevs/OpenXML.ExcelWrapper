@@ -51,11 +51,6 @@ namespace OpenXML.ExcelWrapper
             return styleSheet;
         }
 
-        private static string ColorToRgbString(System.Drawing.Color color)
-        {
-            return color.A.ToString("X2") + color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
-        }
-
         private void AddNumberFormatToCellFormat(ExcelCellStyle item, CellFormat cellFormat)
         {
             if (item.CellFormat.HasValue)
@@ -67,9 +62,9 @@ namespace OpenXML.ExcelWrapper
 
         private void AddBackgroundToCellFormat(ExcelCellStyle item, CellFormat cellFormat)
         {
-            if (item.BackgroundColor.HasValue)
+            if (item.BackgroundColor != null)
             {
-                var color = ColorToRgbString(item.BackgroundColor.Value);
+                var color = item.BackgroundColor.ColorHexCode;
                 var fill = new Fill
                 {
                     PatternFill = new PatternFill
@@ -88,8 +83,6 @@ namespace OpenXML.ExcelWrapper
         {
             if (item.Font != null)
             {
-                var color = ColorToRgbString(item.Font.Color.Value);
-
                 var font = new Font();
                 if (!string.IsNullOrWhiteSpace(item.Font.FontName))
                     font.AppendChild(new FontName { Val = item.Font.FontName });
@@ -97,8 +90,8 @@ namespace OpenXML.ExcelWrapper
                 if (item.Font.Size.HasValue)
                     font.AppendChild(new FontSize { Val = item.Font.Size.Value });
 
-                if (item.Font.Color.HasValue)
-                    font.AppendChild(new Color { Rgb = color });
+                if (item.Font.Color != null)
+                    font.AppendChild(new Color { Rgb = item.Font.Color.ColorHexCode });
 
                 if (item.Font.IsBold)
                     font.AppendChild(new Bold { Val = true });
@@ -146,7 +139,7 @@ namespace OpenXML.ExcelWrapper
                     if (borderItem.Color is null)
                         color.Auto = true;
                     else
-                        color.Rgb = ColorToRgbString(borderItem.Color.Value);
+                        color.Rgb = borderItem.Color.ColorHexCode;
 
                     switch (borderItem.Border)
                     {

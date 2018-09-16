@@ -8,7 +8,7 @@
         /// <param name="border">The border (top, bottom, etc).</param>
         /// <param name="style">The style of the border.</param>
         /// <param name="color">The color of the border.</param>
-        public ExcelCellStyleBorder(ExcelCellBorderEnum border, ExcelCellStyleBorderSizeEnum style = ExcelCellStyleBorderSizeEnum.Thin, System.Drawing.Color? color = null)
+        public ExcelCellStyleBorder(ExcelCellBorderEnum border, ExcelCellStyleBorderSizeEnum style = ExcelCellStyleBorderSizeEnum.Thin, ExcelColor color = null)
         {
             this.Border = border;
             this.Style = style;
@@ -17,7 +17,7 @@
 
         public ExcelCellBorderEnum Border { get; set; }
 
-        public System.Drawing.Color? Color { get; set; }
+        public ExcelColor Color { get; set; }
 
         public ExcelCellStyleBorderSizeEnum? Style { get; set; }
 
@@ -30,7 +30,7 @@
         /// </returns>
         public override bool Equals(object obj)
         {
-            if (obj == null)
+            if (obj is null)
                 return false;
 
             if (obj is ExcelCellStyleBorder otherBorder)

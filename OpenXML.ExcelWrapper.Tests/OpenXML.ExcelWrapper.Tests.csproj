@@ -80,7 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenXML.ExcelWrapper\OpenXML.ExcelWrapper.csproj">
-      <Project>{89b61b64-1b21-46ba-bb56-0280fde310d7}</Project>
+      <Project>{29796476-3024-4c4a-8489-4b156ae813cf}</Project>
       <Name>OpenXML.ExcelWrapper</Name>
     </ProjectReference>
   </ItemGroup>

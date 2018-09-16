@@ -13,7 +13,7 @@ namespace OpenXML.ExcelWrapper.Tests
         [TestMethod]
         public void ExcelCellStyleFont_OneInstance()
         {
-            var cellStyleA = new ExcelCellStyleFont { Color = Color.Red, FontName = "test", IsBold = true, IsItalic = false, Size = 99 };
+            var cellStyleA = new ExcelCellStyleFont { Color = new ExcelColor("FF0000"), FontName = "test", IsBold = true, IsItalic = false, Size = 99 };
             var cellStyleB = cellStyleA;
             cellStyleA.Equals(cellStyleB).ShouldBeTrue();
         }
@@ -21,8 +21,8 @@ namespace OpenXML.ExcelWrapper.Tests
         [TestMethod]
         public void ExcelCellStyleFont_TwoInstances_Identical()
         {
-            var cellStyleA = new ExcelCellStyleFont { Color = Color.Red, FontName = "test", IsBold = true, IsItalic = false, Size = 99 };
-            var cellStyleB = new ExcelCellStyleFont { Color = Color.Red, FontName = "test", IsBold = true, IsItalic = false, Size = 99 };
+            var cellStyleA = new ExcelCellStyleFont { Color = new ExcelColor("FF0000"), FontName = "test", IsBold = true, IsItalic = false, Size = 99 };
+            var cellStyleB = new ExcelCellStyleFont { Color = new ExcelColor("FF0000"), FontName = "test", IsBold = true, IsItalic = false, Size = 99 };
 
             cellStyleA.Equals(cellStyleB).ShouldBeTrue();
         }
@@ -31,8 +31,8 @@ namespace OpenXML.ExcelWrapper.Tests
         public void ExcelCellStyleFont_ListOfTwoInstancesDistinct_ShouldReturnOneInstance()
         {
             var lst = new List<ExcelCellStyleFont> {
-                new ExcelCellStyleFont { Color = Color.Red, FontName = "test", IsBold = true, IsItalic = false, Size = 99, IsUnderline= true },
-                new ExcelCellStyleFont { Color = Color.Red, FontName = "test", IsBold = true, IsItalic = false, Size = 99, IsUnderline= true }
+                new ExcelCellStyleFont { Color = new ExcelColor("FF0000"), FontName = "test", IsBold = true, IsItalic = false, Size = 99, IsUnderline= true },
+                new ExcelCellStyleFont { Color = new ExcelColor("FF0000"), FontName = "test", IsBold = true, IsItalic = false, Size = 99, IsUnderline= true }
             };
 
             lst[0].ShouldBe(lst[1]);
@@ -44,9 +44,9 @@ namespace OpenXML.ExcelWrapper.Tests
         public void ExcelCellStyleFont_ListOfThreeInstancesDistinct_ShouldReturnOneInstance()
         {
             var lst = new List<ExcelCellStyleFont> {
-                new ExcelCellStyleFont { Color = Color.Red, FontName = "test", IsBold = true, IsItalic = false, Size = 99, IsUnderline= true },
-                new ExcelCellStyleFont { Color = Color.Red, FontName = "test", IsBold = true, IsItalic = false, Size = 99, IsUnderline= true },
-                new ExcelCellStyleFont { Color = Color.Red, FontName = "test", IsBold = true, IsItalic = false, Size = 99, IsUnderline= true },
+                new ExcelCellStyleFont { Color = new ExcelColor("FF0000"), FontName = "test", IsBold = true, IsItalic = false, Size = 99, IsUnderline= true },
+                new ExcelCellStyleFont { Color = new ExcelColor("FF0000"), FontName = "test", IsBold = true, IsItalic = false, Size = 99, IsUnderline= true },
+                new ExcelCellStyleFont { Color = new ExcelColor("FF0000"), FontName = "test", IsBold = true, IsItalic = false, Size = 99, IsUnderline= true },
             };
 
             lst.Distinct().Count().ShouldBe(1);
@@ -56,9 +56,9 @@ namespace OpenXML.ExcelWrapper.Tests
         public void ExcelCellStyleFont_ListOfThreeDifferentInstancesDistinct_ShouldReturnTwoInstances()
         {
             var lst = new List<ExcelCellStyleFont> {
-                new ExcelCellStyleFont { Color = Color.Red, FontName = "test", IsBold = true, IsItalic = false, Size = 99, IsUnderline= true },
-                new ExcelCellStyleFont { Color = Color.Green, FontName = "test", IsBold = true, IsItalic = false, Size = 99, IsUnderline= true },
-                new ExcelCellStyleFont { Color = Color.Red, FontName = "test", IsBold = true, IsItalic = false, Size = 99, IsUnderline= true },
+                new ExcelCellStyleFont { Color = new ExcelColor("FF0000"), FontName = "test", IsBold = true, IsItalic = false, Size = 99, IsUnderline= true },
+                new ExcelCellStyleFont { Color = new ExcelColor("00FF00"), FontName = "test", IsBold = true, IsItalic = false, Size = 99, IsUnderline= true },
+                new ExcelCellStyleFont { Color = new ExcelColor("FF0000"), FontName = "test", IsBold = true, IsItalic = false, Size = 99, IsUnderline= true },
             };
 
             lst.Distinct().Count().ShouldBe(2);
