@@ -1,6 +1,7 @@
 ﻿using OpenXML.ExcelWrapper;
 using OpenXML.ExcelWrapper.Styling;
 using System;
+using System.Drawing;
 using System.IO;
 
 namespace ExcelWrapperConsole
@@ -8,6 +9,12 @@ namespace ExcelWrapperConsole
     class Program
     {
         static void Main(string[] args)
+        {
+            CreateNewDocument();
+            //OpenExistingDocument();
+        }
+
+        private static void CreateNewDocument()
         {
             var wb = new ExcelWorkbook();
             var myFirstSheet = new ExcelSheet("My Sheet");
@@ -24,8 +31,8 @@ namespace ExcelWrapperConsole
             var borderedYellowCell = new ExcelCellStyle
             {
                 CellFormat = CellFormatEnum.PercentageTwoDecimals,
-                BackgroundColor = new ExcelColor("FFFF00"),
-                Font = new ExcelCellStyleFont { Color = new ExcelColor("FF0000") },
+                BackgroundColor = new ExcelColor(Color.Green),
+                Font = new ExcelCellStyleFont { Color = new ExcelColor(Color.Red) },
             };
 
             var greenCell = new ExcelCellStyle
@@ -65,6 +72,11 @@ namespace ExcelWrapperConsole
 
             File.WriteAllBytes(fileName, xlsData);
             System.Diagnostics.Process.Start(fileName);
+        }
+
+        private static void OpenExistingDocument()
+        {
+            // ToDo:
         }
     }
 }

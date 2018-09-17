@@ -11,8 +11,14 @@ namespace OpenXML.ExcelWrapper
 {
     public class ExcelWorkbook
     {
+        /// <summary>
+        /// The sheets to be written to the Excel document.
+        /// </summary>
         private readonly List<ExcelSheet> sheets = new List<ExcelSheet>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExcelWorkbook"/> class.
+        /// </summary>
         public ExcelWorkbook()
         {
         }

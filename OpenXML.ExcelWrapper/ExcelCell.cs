@@ -4,18 +4,42 @@ using System.Text.RegularExpressions;
 
 namespace OpenXML.ExcelWrapper
 {
+    /// <summary>
+    /// Cell class.
+    /// </summary>
     public class ExcelCell
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExcelCell"/> class.
+        /// </summary>
+        /// <param name="column">The column letters (A, B, C, etc).</param>
+        /// <param name="row">The row number (starting with 1).</param>
+        /// <param name="value">The value to insert into the cell.</param>
+        /// <param name="cellFormat">The cell data format.</param>
         public ExcelCell(string column, int row, object value, CellFormatEnum? cellFormat = null)
         {
             this.Init(column, row, value, cellFormat);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExcelCell"/> class.
+        /// </summary>
+        /// <param name="column">The column number (starting with 1).</param>
+        /// <param name="row">The row number (starting with 1).</param>
+        /// <param name="value">The value to insert into the cell.</param>
+        /// <param name="cellFormat">The cell data format.</param>
         public ExcelCell(int column, int row, object value, CellFormatEnum? cellFormat = null)
         {
             this.Init(GetColumnLetters(column), row, value, cellFormat);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExcelCell" /> class.
+        /// </summary>
+        /// <param name="address">The cell address (e.g, 'A1' or 'AZ22').</param>
+        /// <param name="value">The value to insert into the cell.</param>
+        /// <param name="cellFormat">The cell data format.</param>
+        /// <exception cref="ArgumentException">Invalid cell address.</exception>
         public ExcelCell(string address, object value, CellFormatEnum? cellFormat = null)
         {
             var addressRegex = new Regex(@"(?<col>([A-Z]|[a-z])+)(?<row>([1-9]\d*)+)");
@@ -28,6 +52,13 @@ namespace OpenXML.ExcelWrapper
             this.Init(column, row, value, cellFormat);
         }
 
+        /// <summary>
+        /// Initializes the specified cell.
+        /// </summary>
+        /// <param name="column">The column letters.</param>
+        /// <param name="row">The row number.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="cellFormat">The cell data format.</param>
         private void Init(string column, int row, object value, CellFormatEnum? cellFormat = null)
         {
             this.Column = column;
@@ -38,15 +69,11 @@ namespace OpenXML.ExcelWrapper
                 this.CellStyle = new ExcelCellStyle { CellFormat = cellFormat };
         }
 
-        public bool IsFormula { get; private set; }
-
         public int Row { get; private set; }
 
         public string Column { get; private set; }
 
         public object Value { get; private set; }
-
-        public Type ValueType { get; private set; }
 
         public string Address
         {
@@ -57,6 +84,16 @@ namespace OpenXML.ExcelWrapper
         }
 
         public ExcelCellStyle CellStyle { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this cell contains a formula.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is formula; otherwise, <c>false</c>.
+        /// </value>
+        internal bool IsFormula { get; private set; }
+
+        internal Type ValueType { get; private set; }
 
         /// <summary>
         /// Gets the column letters from numeric index.
@@ -88,6 +125,13 @@ namespace OpenXML.ExcelWrapper
             return result;
         }
 
+        /// <summary>
+        /// Checks whether the value is a formula string. If it is - performs additional processing to be compatible with OpenXML.
+        /// Formula is specified as "=SUM(A1:B2)". 
+        /// Formula string (that should not be calculated) is specified as "'=SUM(A1:B2)".
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>Processed formula (if it is a formula string), otherwise - object is unchanged.</returns>
         private object CheckValueIsFormula(object value)
         {
             if (value is string stringValue)
