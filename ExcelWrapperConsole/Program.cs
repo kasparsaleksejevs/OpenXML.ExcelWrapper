@@ -10,8 +10,8 @@ namespace ExcelWrapperConsole
     {
         static void Main(string[] args)
         {
-            CreateNewDocument();
-            //OpenExistingDocument();
+            //CreateNewDocument();
+            UpdateExistingDocument();
         }
 
         private static void CreateNewDocument()
@@ -48,6 +48,7 @@ namespace ExcelWrapperConsole
             myFirstSheet.AddOrUpdateCell(new ExcelCell("B3", "Percentages") { CellStyle = boldStyle });
             myFirstSheet.AddOrUpdateCell(new ExcelCell("C3", "C Column") { CellStyle = boldStyle });
             myFirstSheet.AddOrUpdateCell(new ExcelCell(4, 3, "D Column") { CellStyle = boldStyle });
+            myFirstSheet.AddOrUpdateCell("E3", "E Column");
 
             myFirstSheet.AddOrUpdateCell(new ExcelCell("A", 4, 0.34m, CellFormatEnum.DecimalTwoDecimals));
             myFirstSheet.AddOrUpdateCell(new ExcelCell("B", 4, 0.231, CellFormatEnum.PercentageTwoDecimals));
@@ -71,12 +72,18 @@ namespace ExcelWrapperConsole
             var fileName = @"C:\temp\MyExcel_v2.xlsx";
 
             File.WriteAllBytes(fileName, xlsData);
-            System.Diagnostics.Process.Start(fileName);
+            //System.Diagnostics.Process.Start(fileName);
         }
 
-        private static void OpenExistingDocument()
+        private static void UpdateExistingDocument()
         {
-            // ToDo:
+            var fileName = @"C:\temp\MyExcelTemplate.xlsx";
+            var wb = ExcelWorkbook.FromFile(fileName);
+            var sheet = wb.GetSheetByName("My Sheet");
+            sheet.AddOrUpdateCell("B7", "TEST!");
+            wb.Update();
+
+            System.Diagnostics.Process.Start(fileName);
         }
     }
 }

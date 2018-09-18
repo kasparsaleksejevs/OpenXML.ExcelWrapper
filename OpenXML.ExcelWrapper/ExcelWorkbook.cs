@@ -16,6 +16,8 @@ namespace OpenXML.ExcelWrapper
         /// </summary>
         private readonly List<ExcelSheet> sheets = new List<ExcelSheet>();
 
+        private readonly string fileName = null;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ExcelWorkbook"/> class.
         /// </summary>
@@ -23,11 +25,31 @@ namespace OpenXML.ExcelWrapper
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExcelWorkbook"/> class.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        public ExcelWorkbook(string fileName)
+        {
+            this.fileName = fileName;
+        }
+
         public void AddSheet(ExcelSheet sheet)
         {
             this.sheets.Add(sheet);
         }
 
+        public ExcelSheet GetSheetByName(string sheetName)
+        {
+            var sheet = new ExcelSheet(sheetName);
+            this.sheets.Add(sheet);
+            return sheet;
+        }
+
+        /// <summary>
+        /// Saves the spreadsheet as a new file.
+        /// </summary>
+        /// <returns>Byte array containing spreadsheet data.</returns>
         public byte[] Save()
         {
             using (var ms = new MemoryStream())
@@ -46,6 +68,8 @@ namespace OpenXML.ExcelWrapper
                     var worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
                     var workSheet = new Worksheet();
                     var sheetData = new SheetData();
+
+                    // ToDo: drawings part will go here
 
                     foreach (var rowGroup in item.Cells.GroupBy(g => g.Value.Row))
                     {
@@ -78,23 +102,96 @@ namespace OpenXML.ExcelWrapper
             }
         }
 
-        public static ExcelWorkbook FromFile(string fileName)
+        /// <summary>
+        /// Saves the spreadsheet to the existing file, adding or updating cells as specified.
+        /// Note: only cell data types and values are updated. The cell style updates currently are not supported. Adding new sheets is also not yet supported.
+        /// </summary>
+        /// <returns>Byte array containing spreadsheet data.</returns>
+        public void Update()
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(this.fileName))
+                throw new Exception("FileName not specified. Please instantiate ExcelWorkbook with fileName overload");
+
+            using (var ms = new FileStream(this.fileName, FileMode.Open))
+            using (var doc = SpreadsheetDocument.Open(ms, true))
+            {
+                var workbookPart = doc.WorkbookPart;
+                var sheets = doc.WorkbookPart.Workbook.Sheets;
+
+                foreach (var item in this.sheets)
+                {
+                    var sheet = sheets.OfType<Sheet>().FirstOrDefault(m => m.Name == item.SheetName);
+                    if (sheet == null)
+                        throw new Exception($"Sheet with name '{item.SheetName}' does not exist.");
+
+                    var worksheetPart = doc.WorkbookPart.GetPartById(sheet.Id.Value) as WorksheetPart;
+                    var worksheet = worksheetPart.Worksheet;
+
+                    foreach (var rowGroup in item.Cells.GroupBy(g => g.Value.Row))
+                    {
+                        var rowIndex = (uint)rowGroup.Key;
+                        var row = worksheet.GetFirstChild<SheetData>().Elements<Row>().FirstOrDefault(r => r.RowIndex == rowIndex);
+                        if (row is null)
+                        {
+                            row = new Row() { RowIndex = rowIndex };
+                            worksheet.Append(row);
+                        }
+
+                        foreach (var cellItem in rowGroup)
+                        {
+                            var cell = row.Elements<Cell>().FirstOrDefault(m => m.CellReference.Value == cellItem.Value.Address);
+                            if (cell is null)
+                            {
+                                cell = this.CreateCell(cellItem.Value, withoutStyle: true);
+
+                                var nextCell = row.Elements<Cell>().FirstOrDefault(m => m.CellReference.Value.CompareTo(cellItem.Value.Address) > 0);
+                                if (nextCell != null)
+                                    row.InsertBefore(cell, nextCell);
+                                else
+                                    row.AppendChild(cell);
+                            }
+
+                            cell.CellValue = new CellValue(cellItem.Value.Value.ToString());
+                        }
+                    }
+
+                    worksheetPart.Worksheet.Save();
+                }
+
+                doc.Close();
+            }
         }
 
+        /// <summary>
+        /// Loads the spreadsheet from file for reading (and writing).
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        /// <returns>ExcelWorkbook instance.</returns>
+        /// <exception cref="NotImplementedException">not yet implemented</exception>
+        public static ExcelWorkbook FromFile(string fileName)
+        {
+            return new ExcelWorkbook(fileName);
+
+        }
+
+        /// <summary>
+        /// Loads the spreadsheet from stream for reading (and writing).
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <returns>ExcelWorkbook instance.</returns>
+        /// <exception cref="NotImplementedException">not yet implemented</exception>
         public static ExcelWorkbook FromStream(Stream stream)
         {
             throw new NotImplementedException();
         }
 
-        private Cell CreateCell(ExcelCell excelCell)
+        private Cell CreateCell(ExcelCell excelCell, bool withoutStyle = false)
         {
             if (excelCell is null)
                 throw new ArgumentNullException(nameof(excelCell));
 
             var cell = new Cell { CellReference = excelCell.Address };
-            if (excelCell.CellStyle != null)
+            if (excelCell.CellStyle != null && !withoutStyle)
                 cell.StyleIndex = excelCell.CellStyle.StyleIndex;
 
             if (excelCell.Value is null)
@@ -129,7 +226,6 @@ namespace OpenXML.ExcelWrapper
             else if (excelCell.ValueType == typeof(DateTime)
                 || excelCell.ValueType == typeof(DateTime?))
             {
-                //https://stackoverflow.com/questions/2792304/how-to-insert-a-date-to-an-open-xml-worksheet
                 excelCellType = CellValues.Number;
                 cellValue = new CellValue(((DateTime)excelCell.Value).ToOADate().ToString(CultureInfo.InvariantCulture));
             }
