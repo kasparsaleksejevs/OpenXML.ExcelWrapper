@@ -66,6 +66,10 @@ namespace ExcelWrapperConsole
 
             myFirstSheet.AddOrUpdateCell(new ExcelCell("C8", "=SUM(A6:D6)") { CellStyle = bordersCell });
 
+
+            var bmp = new Bitmap("c:\\temp\\sample.jpg");
+            myFirstSheet.AddOrUpdateCell("A11", bmp);
+
             var xlsData = wb.Save();
 
             var fileName = @"C:\temp\MyExcel_v2.xlsx";

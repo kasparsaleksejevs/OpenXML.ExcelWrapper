@@ -1,11 +1,15 @@
 ﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using XmlDrawing = DocumentFormat.OpenXml.Drawing;
+using XmlDrawingSheet = DocumentFormat.OpenXml.Drawing.Spreadsheet;
 
 namespace OpenXML.ExcelWrapper
 {
@@ -72,6 +76,8 @@ namespace OpenXML.ExcelWrapper
 
                     sheets.Append(sheet1);
                 }
+
+                
 
                 doc.Close();
                 return ms.ToArray();
@@ -150,6 +156,96 @@ namespace OpenXML.ExcelWrapper
             cell.CellReference = excelCell.Address;
 
             return cell;
+        }
+
+        private void InsertImage(SpreadsheetDocument _doc, string fileName)
+        {
+            try
+            {
+                WorkbookPart workbookpart = _doc.WorkbookPart;
+                WorksheetPart worksheetPart = workbookpart.GetPartsOfType<WorksheetPart>().First();
+
+                var drawingsPart = worksheetPart.AddNewPart<DrawingsPart>();
+                if (!worksheetPart.Worksheet.ChildElements.OfType<Drawing>().Any())
+                {
+                    if (worksheetPart.Worksheet.Elements<LegacyDrawing>().Count() > 0)
+                    {
+                        LegacyDrawing lg = worksheetPart.Worksheet.Elements<LegacyDrawing>().First();
+                        worksheetPart.Worksheet.InsertBefore<Drawing>(new Drawing { Id = worksheetPart.GetIdOfPart(drawingsPart) }, lg);
+                    }
+                    else
+                    {
+                        worksheetPart.Worksheet.Append(new Drawing { Id = worksheetPart.GetIdOfPart(drawingsPart) });
+                    }
+                }
+
+                if (drawingsPart.WorksheetDrawing == null)
+                    drawingsPart.WorksheetDrawing = new WorksheetDrawing();
+
+                var worksheetDrawing = drawingsPart.WorksheetDrawing;
+
+                var imagePart = drawingsPart.AddImagePart(ImagePartType.Jpeg);
+                string imageFileName = fileName;
+                using (var stream = new FileStream(imageFileName, FileMode.Open, FileAccess.Read))
+                {
+                    imagePart.FeedData(stream);
+                }
+
+                var extents = new Extent();
+                using (var bm = new Bitmap(imageFileName))
+                {
+                    extents.Cx = (long)bm.Width * (long)((float)914400 / bm.HorizontalResolution);
+                    extents.Cy = (long)bm.Height * (long)((float)914400 / bm.VerticalResolution);
+                }
+
+                var colOffset = 0;
+                var rowOffset = 0;
+                int colNumber = 10;
+                int rowNumber = 10;
+
+                var nvps = worksheetDrawing.Descendants<NonVisualDrawingProperties>();
+                var nvpId = nvps.Count() > 0 ?
+                    (UInt32Value)worksheetDrawing.Descendants<NonVisualDrawingProperties>().Max(p => p.Id.Value) + 1 :
+                    1U;
+
+                var oneCellAnchor = new OneCellAnchor(
+                    new XmlDrawingSheet.FromMarker
+                    {
+                        ColumnId = new ColumnId((colNumber - 1).ToString()),
+                        RowId = new RowId((rowNumber - 1).ToString()),
+                        ColumnOffset = new ColumnOffset(colOffset.ToString()),
+                        RowOffset = new RowOffset(rowOffset.ToString())
+                    },
+                    new Extent { Cx = extents.Cx, Cy = extents.Cy },
+                    new XmlDrawingSheet.Picture(
+                        new NonVisualPictureProperties(
+                            new NonVisualDrawingProperties { Id = nvpId, Name = "Picture " + nvpId, Description = "barcode" },
+                            new NonVisualPictureDrawingProperties(new XmlDrawing.PictureLocks { NoChangeAspect = true })
+                        ),
+                        new BlipFill(
+                            new XmlDrawing.Blip { Embed = drawingsPart.GetIdOfPart(imagePart), CompressionState = XmlDrawing.BlipCompressionValues.Print },
+                            new XmlDrawing.Stretch(new XmlDrawing.FillRectangle())
+                        ),
+                        new ShapeProperties(
+                            new XmlDrawing.Transform2D(
+                                new XmlDrawing.Offset { X = 0, Y = 0 },
+                                new Extent { Cx = extents.Cx, Cy = extents.Cy }
+                            ),
+                            new XmlDrawing.PresetGeometry { Preset = XmlDrawing.ShapeTypeValues.Rectangle }
+                        )
+                    ),
+                    new ClientData()
+                );
+
+                worksheetDrawing.Append(oneCellAnchor);
+
+                _doc.WorkbookPart.Workbook.Save();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

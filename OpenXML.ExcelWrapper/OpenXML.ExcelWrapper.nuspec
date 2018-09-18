@@ -17,6 +17,10 @@
       <group>
         <dependency id="DocumentFormat.OpenXml" version="[2.8,3.0)" />
       </group>
+
+      <group>
+        <dependency id="System.Drawing.Common" version="[4.5,5.0)" />
+      </group>
     </dependencies>
   </metadata>
 </package>
