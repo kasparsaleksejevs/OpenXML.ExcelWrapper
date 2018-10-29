@@ -124,7 +124,7 @@ namespace OpenXML.ExcelWrapper
                 || excelCell.ValueType == typeof(double?))
             {
                 excelCellType = CellValues.Number;
-                cellValue = new CellValue(string.Format(CultureInfo.InvariantCulture, "{0:N8}", excelCell.Value));
+                cellValue = new CellValue(string.Format(CultureInfo.InvariantCulture, "{0:F8}", excelCell.Value));
             }
             else if (excelCell.ValueType == typeof(DateTime)
                 || excelCell.ValueType == typeof(DateTime?))
